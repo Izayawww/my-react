@@ -87,11 +87,7 @@ class PlaylistComp extends Component {
     }
 
     getSimiUserList() {
-        axios.get(`/simi/user?id=${this.props.match.params.id}`,{
-            header: {
-                "Cookie": document.cookie,
-            }
-        }).then(res => {
+        axios.get(`/simi/user?id=${this.props.match.params.id}`).then(res => {
             let simiUserList = res.data.userprofiles.map(item => {
                 return { nickname: item.nickname, avatarUrl: item.avatarUrl, userId: item.userId, recommendReason: item.recommendReason }
             })
