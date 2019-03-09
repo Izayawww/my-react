@@ -44,7 +44,7 @@ class PlaylistComp extends Component {
             relateList: [],
             loading: false,
             columns: [
-                { title: '序号', dataIndex: 'id', key: 'index', render: (text, record, index) => <div className='table-index'><span>{index + 1}</span><span to={'/song/' + text}><Icon type="play-circle" data-id={text} /></span></div>, width: 50 },
+                { title: '序号', key: 'index', render: (text, record, index) => <div className='table-index'><span>{index + 1}</span><span><Icon type="play-circle" /></span></div>, width: 50 },
                 { title: '歌曲标题', dataIndex: 'name', key: 'name' },
                 { title: '时长', dataIndex: 'dt', key: 'dt', render: text => <span>{parseInt(text / 60000) + ':' + parseInt((parseFloat(text / 60000) - parseInt(text / 60000)) * 60)}</span> },
                 { title: '歌手', dataIndex: 'ar', key: 'ar', render: text => <span>{text[0].name}</span> },
@@ -129,7 +129,7 @@ class PlaylistComp extends Component {
                             onRow={() => {
                                 return {
                                     onDoubleClick: (event) => {
-                                        this.props.history.push('/song/' + event.target.dataset.rowKey)
+                                        this.props.history.push('/song/' + event.currentTarget.dataset.rowKey)
                                     },
                                 }
                             }}

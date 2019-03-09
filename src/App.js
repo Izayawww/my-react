@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import {
   Layout, Menu, Icon, Input
 } from 'antd';
-import { HashRouter as Router, Route,Link } from 'react-router-dom'
+import { HashRouter as Router, Route,Link ,Redirect} from 'react-router-dom'
 import Home from './home/Home'
 import MyList from './my-music/my-music'
 import PlaylistComp from './playlist/playlist'
+import Song from './song/song'
 import './App.scss'
 const { Content, Footer } = Layout;
 const IconFont = Icon.createFromIconfontCN({ scriptUrl: '//at.alicdn.com/t/font_883876_h3y2yo43haj.js' })
@@ -66,9 +67,11 @@ class App extends Component {
         <Content className='app-content'>
           <Router>
             <div>
+              <Route path='/'  exact render={()=> (<Redirect to='/home'/>)}></Route>
               <Route path='/home' component={Home}></Route>
               <Route path='/mylist' component={MyList}></Route>
               <Route path='/playlist/:id' component={PlaylistComp}></Route>
+              <Route path='/song/:id' component={Song}></Route>
             </div>
           </Router>
         </Content>

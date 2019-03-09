@@ -1,0 +1,7 @@
+.lyric-main{
+    max-height: 400px;
+    overflow: auto;
+    .lyric-inner{
+        overflow: hidden;
+    }
+}
