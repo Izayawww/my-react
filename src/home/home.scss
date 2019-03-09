@@ -1,0 +1,112 @@
+.ant-carousel .slick-slide {
+    text-align: center;
+    overflow: hidden;
+}
+
+.banner {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .my-carousel {
+        overflow: hidden;
+        flex: 1
+    }
+    .banner-img {
+        display: block;
+        width: 730px;
+        height: 336px;
+        margin: auto;
+    }
+    .prev,
+    .next {
+        font-size: 40px;
+        cursor: pointer;
+        color: gainsboro;
+        &:hover {
+            color: black;
+        }
+    }
+}
+
+.content-main {
+    padding: 20px;
+}
+
+.content-right {
+    display: inline-block;
+    min-width: 780px;
+    .content-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 0 10px;
+        border: 1px solid gainsboro{
+            top: 0;
+            bottom:0;
+        }
+        .content-info {
+            width: 140px;
+            margin: 10px;
+            cursor: pointer;
+            .list-div {
+                width: 140px;
+                height: 140px;
+                border-radius: 5px;
+                position: relative;
+                background-size: cover;
+                .list-play {
+                    position: absolute;
+                    width: 100%;
+                    bottom: 0;
+                    color: lightgrey;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 2px 10px;
+                    background: rgba(0, 0, 0, 0.4);
+                    font-size: 12px;
+                    .play-count {
+                        margin-right: 8px;
+                    }
+                    .play-icon:hover {
+                        color: white;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .content-name {
+                font-size: 12px;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+.content-left {
+    min-width: 240px;
+    display: inline-block;
+    margin-left:20px;
+    .user {
+        display: flex;
+        align-items: center;
+        .user-avatar {
+            border: 1px solid gainsboro;
+            margin-right: 20px;
+        }
+    }
+    .user-active {
+        margin: 20px 0 ;
+        &>div {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .user-follow {
+            padding: 0 10px;
+            border: 1px solid gainsboro {
+                top: 0px;
+                bottom: 0px;
+            }
+        }
+    }
+}
