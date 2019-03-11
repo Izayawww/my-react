@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Button, Avatar, Table, Icon, List } from 'antd';
+import { Button, Avatar, Table, Icon, List,Skeleton } from 'antd';
 import axios from 'axios'
-import { Link, Router } from 'react-router-dom';
+import { connect } from 'react-redux'
 import './index.scss'
 axios.defaults.baseURL = 'http://134.175.224.127:7003';
 
@@ -56,22 +56,29 @@ class PlaylistComp extends Component {
         this.setState({ loading: true })
         axios.get('/playlist/detail?id=' + this.props.match.params.id).then(res => {
             this.setState({ playlist: res.data.playlist, loading: false })
+            this.props.dispatch({ type: 'playlist', data: res.data.playlist })
         })
     }
 
     getComment() {
         axios.get('/comment/playlist?id=' + this.props.match.params.id).then(res => {
             this.setState({ commentList: res.data })
+            this.props.dispatch({ type: 'commentList', data: res.data })
         })
     }
 
     getRelateList() {
         axios.get('/related/playlist?id=' + this.props.match.params.id).then(res => {
             this.setState({ relateList: res.data.playlists })
+            this.props.dispatch({ type: 'relateList', data: res.data.playlists })
         })
     }
 
     async componentDidMount() {
+        if (this.props.state.playlist && this.props.state.playlist.id == this.props.match.params.id) {
+            this.setState(this.props.state)
+            return;
+        }
         await this.getUserPlayList()
         this.getRelateList();
         this.getComment()
@@ -81,7 +88,7 @@ class PlaylistComp extends Component {
         const { playlist, columns, commentList, relateList } = this.state
         const { creator } = playlist
         const size = 'small'
-        return playlist && (
+        return playlist ? (
             <div className='list-page'>
                 <div className='list-main'>
                     <div style={{ position: 'relative' }}>
@@ -177,8 +184,17 @@ class PlaylistComp extends Component {
                     )}
                 </div>
             </div>
-        )
+        ):<Skeleton active paragraph={{ rows: 6 , width:[480,680,820,650,700,730]}} title={false}/>
     }
 }
 
-export default PlaylistComp
+const mapStateToProps = (state) => {
+    return {
+        state: {
+            playlist: state.playlist,
+            commentList: state.commentList,
+            relateList: state.relateList,
+        }
+    }
+};
+export default connect(mapStateToProps)(PlaylistComp)

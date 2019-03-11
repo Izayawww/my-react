@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Carousel, Icon, Avatar } from 'antd';
 import axios from 'axios'
+import {connect } from 'react-redux'
 import './home.scss'
 axios.defaults.baseURL = 'http://134.175.224.127:7003';
 class Home extends Component {
@@ -11,6 +12,8 @@ class Home extends Component {
         this.state = {
             banners: [],
             recomendList: [],
+            newSongs: [],
+            highList:[],
             userInfo: {}
         }
     }
@@ -23,6 +26,14 @@ class Home extends Component {
         return axios.get('/personalized');
     }
 
+    getNewsong() {
+        return axios.get('/personalized/newsong')
+    }
+
+    getHighList() {
+        return axios.get('/top/playlist/highquality?limit=8');
+    }
+
     componentWillMount() {
         // axios.call([this.getBanner(), this.getRecomendList()]).then(axios.spread(
         //     (banner, recomendList) => {
@@ -32,14 +43,40 @@ class Home extends Component {
         //         this.setState({ banners, recomendList: recomendList.data.result })
         //     }
         // ))
+        console.log(this.props);
+        
+        if(this.props.state.homeLoaded){
+            let state = this.props.state
+            this.setState(state)
+            return;
+        }
         this.getBanner().then(res => {
             let banners = res.data.banners.map(item => {
                 return { imageUrl: item.imageUrl, typeTitle: item.typeTitle, targetId: item.targetId, }
             })
+            this.props.dispatch({type:'banners',data:banners})
             this.setState({ banners })
         })
         this.getRecomendList().then(res => {
             this.setState({ recomendList: res.data.result.slice(0, 8) })
+            this.props.dispatch({type:'recomendList',data:res.data.result.slice(0, 8)})
+        })
+
+        this.getNewsong().then(res => {
+            let newSongs = []
+            res.data.result.slice(0, 8).map(item =>
+                newSongs.push({ id: item.id, name: item.song.album.name, arname: item.song.artists[0].name, imgUrl: item.song.album.picUrl })
+            )
+            this.setState({ newSongs })
+            this.props.dispatch({type:'newSongs',data:newSongs})
+        })
+
+        this.getHighList().then(res => {
+            let highList = res.data.playlists.map(item => {
+                return { id: item.id, name: item.name, copywriter: item.copywriter, imgUrl: item.coverImgUrl, tag: item.tag, creator: item.creator.nickname }
+            })
+            this.setState({ highList })
+            this.props.dispatch({type:'highList',data:highList})
         })
 
         let userInfo = {
@@ -98,18 +135,30 @@ class Home extends Component {
             },
         }
         this.setState({ userInfo })
+        this.props.dispatch({type:'userInfo',data:userInfo})
+    }
+
+    componentDidMount(){
+        this.props.dispatch({type:'homeLoaded',data:{homeLoaded:true}})
     }
 
     handelBannerShow(type) {
         type === 'right' ? this.carousel.next() : this.carousel.prev()
     }
-    toPlaylist(e){
-        if(e.target.dataset.id){
-            this.props.history.push('/playlist/'+e.target.dataset.id)
+
+    toPlaylist(e) {
+        if (e.target.dataset.id) {
+            this.props.history.push('/playlist/' + e.target.dataset.id)
         }
     }
+
+    toSong(e) {
+        let id = e.target.dataset
+        id.id && this.props.history.push('/song/' + id.id)
+    }
+
     render() {
-        const { banners, recomendList, userInfo } = this.state
+        const { banners, recomendList, userInfo, newSongs, highList } = this.state
         return (
             <div>
                 <div className="banner">
@@ -131,8 +180,12 @@ class Home extends Component {
                 </div>
 
                 <div className='content-main'>
-                    <div style={{margin:'auto',display:'flex'}}>
+                    <div style={{ margin: 'auto', display: 'flex' }}>
                         <div className='content-right'>
+                            <div className='content-title'>
+                                <div className='circle-title'></div>
+                                <span className='content-titlename'>推荐歌单</span>
+                            </div>
                             <div className='content-list' onClick={this.toPlaylist.bind(this)}>
                                 {
                                     recomendList.map(item =>
@@ -152,7 +205,48 @@ class Home extends Component {
                                         </div>
                                     )
                                 }
-
+                            </div>
+                            <div className='content-title'>
+                                <div className='circle-title'></div>
+                                <span className='content-titlename'>推荐新音乐</span>
+                            </div>
+                            <div className='content-list' onClick={this.toSong.bind(this)}>
+                                {
+                                    newSongs.map(item =>
+                                        <div className='content-info' key={item.id} >
+                                            <div className='list-div' style={{ backgroundImage: `url(${item.imgUrl})` }} data-id={item.id}>
+                                            </div>
+                                            <div className='content-name'>
+                                                <span>{item.name}</span>
+                                                <div>{item.arname}</div>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                            <div className='content-title'>
+                                <div className='circle-title'></div>
+                                <span className='content-titlename'>精品歌单</span>
+                            </div>
+                            <div className='content-list' onClick={this.toPlaylist.bind(this)}>
+                                {
+                                    highList.map(item =>
+                                        <div className='content-info-q' key={item.id} >
+                                            <Icon type="crown" className='hg'/>
+                                            <div>
+                                                <img className='list-div-q' src={item.imgUrl} data-id={item.id} alt='img'/>
+                                            </div>
+                                            <div className='content-name-q'>
+                                                <span className='content-name'>{item.name}</span>
+                                                <div className='content-creator-q'>by {item.creator}</div>
+                                                <div>
+                                                    <span className='content-tag'>{item.tag}</span>
+                                                    <span>{item.copywriter}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                }
                             </div>
                         </div>
                         <div className='content-left'>
@@ -187,5 +281,9 @@ class Home extends Component {
         )
     }
 }
-
-export default Home
+const mapStateToProps = (state) => {
+    return {
+        state: state
+    }
+};
+export default connect(mapStateToProps)(Home)
