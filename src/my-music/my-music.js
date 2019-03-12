@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Carousel, Icon, Avatar } from 'antd';
 import axios from 'axios'
 axios.defaults.baseURL = 'http://134.175.224.127:7003';
 class MyList extends Component {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { Button, Avatar, Table, Icon, List } from 'antd';
+import { Button, Avatar, Icon, List } from 'antd';
 import axios from 'axios'
-import { Link, Router } from 'react-router-dom';
 import '../playlist/index.scss'
 import './song.scss'
 axios.defaults.baseURL = 'http://134.175.224.127:7003';
@@ -46,12 +45,19 @@ class PlaylistComp extends Component {
             commentList: {},
             relateList: [],
             loading: false,
+            songUrl:'',
         }
     }
 
     getSongDetail() {
         axios.get('/song/detail?ids=' + this.props.match.params.id).then(res => {
             this.setState({ songDetail: res.data.songs[0] })
+        })
+    }
+    
+    getSongUrl() {
+        axios.get('/song/url?id=' + this.props.match.params.id).then(res => {
+            this.setState({ songUrl: res.data.data[0].url})
         })
     }
 
@@ -98,16 +104,18 @@ class PlaylistComp extends Component {
     async componentDidMount() {
         await this.getSongDetail()
         await this.getIyric()
+        this.getSongUrl()
         this.getRelateList()
         this.getSimiUserList()
         this.getComment()
     }
 
     render() {
-        const { songDetail, lyric, commentList, simiUserList, relateList } = this.state
+        const { songDetail, lyric, commentList, simiUserList, relateList,songUrl } = this.state
         const size = 'small'
         return songDetail && (
             <div className='list-page'>
+                <audio src={songUrl} autoPlay />
                 <div className='list-main'>
                     <div style={{ position: 'relative' }}>
                         <div className='bg-img' style={{ backgroundImage: `url(${songDetail.al.picUrl})` }}></div>
@@ -134,7 +142,7 @@ class PlaylistComp extends Component {
                                 </div>
                                 <div className='lyric-main'>
                                     <div className='lyric-inner'>
-                                        {lyric.map(item => <p key={item[0]}>{item[1]}</p>)}
+                                        {lyric.map((item,index) => <p key={index}>{item[1]}</p>)}
                                     </div>
                                 </div>
                             </div>

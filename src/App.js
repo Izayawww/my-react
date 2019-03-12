@@ -8,7 +8,7 @@ import MyList from './my-music/my-music'
 import PlaylistComp from './playlist/playlist'
 import Song from './song/song'
 import './App.scss'
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 const IconFont = Icon.createFromIconfontCN({ scriptUrl: '//at.alicdn.com/t/font_883876_h3y2yo43haj.js' })
 class App extends Component {
 
@@ -19,13 +19,6 @@ class App extends Component {
       }
     }
     
-  handleMenuClick({ key }){
-    let path = ''
-    switch(key){
-      case 2 : path='/home'; break;
-      default:;
-    }
-  }
   render() {
     return (
       <Layout>

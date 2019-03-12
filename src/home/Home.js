@@ -135,6 +135,7 @@ class Home extends Component {
             },
         }
         this.setState({ userInfo })
+        window.localStorage.setItem('userInfo',JSON.stringify(userInfo))
         this.props.dispatch({type:'userInfo',data:userInfo})
     }
 
