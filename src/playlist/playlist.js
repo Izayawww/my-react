@@ -1,60 +1,12 @@
 import React, { Component } from 'react'
-import { Button, Avatar, Table, Icon, List, Skeleton, Input, message } from 'antd';
-
+import { Button, Avatar, Table, Icon, Skeleton, Input, message } from 'antd';
+import CommentListComp from '../components/CommentListComp'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import './index.scss'
 axios.defaults.baseURL = 'http://134.175.224.127:7003';
 const { TextArea } = Input
-const IconText = ({ type, text }) => (
-    <span>
-        <Icon type={type} style={{ marginRight: 8, cursor: 'point' }} />
-        {text}
-    </span>
-);
 
-class CommentListComp extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-      }
-
-    handleChange(e){
-        this.props.onLikeChange(e.currentTarget.dataset.info)
-    }
-
-    render() {
-        const {lists} = this.props
-        return (
-            <List
-                itemLayout="vertical"
-                size="small"
-                dataSource={lists}
-                pagination={{
-                    pageSize: 10,
-                    size: 'small',
-                }}
-                renderItem={(item,index) => (
-                    <List.Item
-                        key={item.time}
-                        actions={[<span style={{ marginLeft: 80 }}>{new Date(item.time).toLocaleString()}</span>,
-                        <span>
-                            <Icon type='like-o' onClick={this.handleChange} data-info={`${item.commentId}-${item.liked?1:0}-${index}`} style={{ marginRight: 8, cursor: 'point' }} className={item.liked ? 'comment-like' : ''} />
-                            {item.likedCount}
-                        </span>]}
-                    >
-                        <List.Item.Meta
-                            avatar={<Avatar shape="square" size={64} src={item.user.avatarUrl} />}
-                            title={<span className='comment-nickname'>{item.user.nickname}</span>}
-                            description={<span className='comment-nickname'>{item.content}</span>}
-                        />
-                    </List.Item>
-                )}
-            />
-        )
-    }
-}
 class PlaylistComp extends Component {
     constructor(props) {
         super(props)

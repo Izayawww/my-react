@@ -1,40 +1,12 @@
 import React, { Component } from 'react'
-import { Button, Avatar, Icon, List } from 'antd';
+import { Button, Avatar, Input, message } from 'antd';
 import axios from 'axios'
 import '../playlist/index.scss'
 import './song.scss'
+import CommentListComp from '../components/CommentListComp'
+const {TextArea} = Input
 axios.defaults.baseURL = 'http://134.175.224.127:7003';
 axios.defaults.withCredentials=true
-const IconText = ({ type, text }) => (
-    <span>
-        <Icon type={type} style={{ marginRight: 8 }} />
-        {text}
-    </span>
-);
-
-const CommentListComp = ({ lists }) => (
-    <List
-        itemLayout="vertical"
-        size="small"
-        dataSource={lists}
-        pagination={{
-            pageSize: 10,
-            size: 'small',
-        }}
-        renderItem={item => (
-            <List.Item
-                key={item.time}
-                actions={[<span style={{ marginLeft: 80 }}>{new Date(item.time).toLocaleDateString()}</span>, <IconText type="like-o" text={item.likedCount} />]}
-            >
-                <List.Item.Meta
-                    avatar={<Avatar shape="square" size={64} src={item.user.avatarUrl} />}
-                    title={<span className='comment-nickname'>{item.user.nickname}</span>}
-                    description={<span className='comment-nickname'>{item.content}</span>}
-                />
-            </List.Item>
-        )}
-    />
-)
 class PlaylistComp extends Component {
     constructor(props) {
         super(props)
@@ -110,8 +82,40 @@ class PlaylistComp extends Component {
         this.getComment()
     }
 
+    handleComment(e) {
+        this.setState({ commentValue: e.currentTarget.value })
+    }
+
+    submitComment() {
+        axios.get(`/comment?t=1&type=2&id=${this.props.match.params.id}&content=${this.state.commentValue}`).then(res => {
+            if (res.data.code === 200) {
+                message.success("评论成功~")
+                this.setState({ commentValue: '' })
+            } else {
+                message.error("评论失败.")
+            }
+        })
+    }
+    handleLike(type,info){
+        let subInfo = info.split('-')
+        axios.get(`/comment/like?id=${this.props.match.params.id}&cid=${subInfo[0]}&t=${subInfo[1]==='1'?0:1}&type=2`).then(res=>{
+            if(res.data.code===200){
+                let temp = this.state.commentList
+                let liked = subInfo[1]==='1'?0:1
+                if(type==='hot'){
+                    temp.hotComments[subInfo[2]].liked=liked
+                    liked?++temp.hotComments[subInfo[2]].likedCount:--temp.hotComments[subInfo[2]].likedCount
+                }else{
+                    temp.comments[subInfo[2]].liked=liked
+                    liked?++temp.comments[subInfo[2]].likedCount:--temp.comments[subInfo[2]].likedCount
+                }
+                this.setState({commentList:temp})
+            }
+        })
+    }
     render() {
         const { songDetail, lyric, commentList, simiUserList, relateList,songUrl } = this.state
+        const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
         const size = 'small'
         return songDetail && (
             <div className='list-page'>
@@ -154,15 +158,23 @@ class PlaylistComp extends Component {
                             <span className='list-len'>共{commentList && commentList.total}条评论</span>
                         </div>
 
+                        <div>
+                            <div className='comment-div'>
+                                <Avatar shape="square" size={54} src={userInfo.profile.avatarUrl} />
+                                <TextArea placeholder="评论" autosize={{ minRows: 2, maxRows: 2 }} onChange={this.handleComment.bind(this)} />
+                            </div>
+                            <div className='comment-btn'><Button shape="round" size={size} onClick={this.submitComment.bind(this)}>评论</Button></div>
+                        </div>
+
                         <div className='list-comment-title'>
                             精彩评论
                         </div>
-                        <CommentListComp lists={commentList.hotComments}></CommentListComp>
+                        <CommentListComp lists={commentList.hotComments} onLikeChange={this.handleLike.bind(this,'hot')}></CommentListComp>
 
                         <div className='list-comment-title'>
                             最新评论({commentList.comments && commentList.comments.length})
                         </div>
-                        <CommentListComp lists={commentList.comments}></CommentListComp>
+                        <CommentListComp lists={commentList.comments} onLikeChange={this.handleLike.bind(this,'nor')}></CommentListComp>
                     </div>
                 </div>
                 <div className='list-right'>
