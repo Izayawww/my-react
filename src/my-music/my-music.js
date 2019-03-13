@@ -127,7 +127,7 @@ class MyMusic extends Component {
                         <div className='bg-img' style={{ backgroundImage: `url(${playlist.coverImgUrl})` }}></div>
                         <div className='list-main-info'>
                             <div><Avatar src={playlist.coverImgUrl} size={160} shape="square" /></div>
-                            <div className='list-info'>
+                            <div className='list-info list-my-info'>
                                 <div>
                                     <span className='list-type'>歌单</span>
                                     <span className='list-name'>{playlist.name}</span>

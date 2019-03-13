@@ -13,7 +13,9 @@
 .list-my-main{
     min-width: 780px;
 }
-.list-creater-info{
-    display: flex;
-    align-items: center;
+.list-my-info{
+    .list-creater-info{
+        display: flex;
+        align-items: center;
+    }
 }

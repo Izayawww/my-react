@@ -62,6 +62,15 @@ class PlaylistComp extends Component {
         this.setState({ commentValue: e.currentTarget.value })
     }
 
+    handleReplaceList(e) {
+        this.props.history.replace("/playlist/"+e.target.dataset.id)
+        setTimeout(()=>{
+            this.getUserPlayList()
+            this.getRelateList();
+            this.getComment()
+        })
+    }
+
     submitComment() {
         axios.get(`/comment?t=1&type=2&id=${this.props.match.params.id}&content=${this.state.commentValue}`).then(res => {
             if (res.data.code === 200) {
@@ -73,20 +82,20 @@ class PlaylistComp extends Component {
         })
     }
 
-    handleLike(type,info){
+    handleLike(type, info) {
         let subInfo = info.split('-')
-        axios.get(`/comment/like?id=${this.props.match.params.id}&cid=${subInfo[0]}&t=${subInfo[1]==='1'?0:1}&type=2`).then(res=>{
-            if(res.data.code===200){
+        axios.get(`/comment/like?id=${this.props.match.params.id}&cid=${subInfo[0]}&t=${subInfo[1] === '1' ? 0 : 1}&type=2`).then(res => {
+            if (res.data.code === 200) {
                 let temp = this.state.commentList
-                let liked = subInfo[1]==='1'?0:1
-                if(type==='hot'){
-                    temp.hotComments[subInfo[2]].liked=liked
-                    liked?++temp.hotComments[subInfo[2]].likedCount:--temp.hotComments[subInfo[2]].likedCount
-                }else{
-                    temp.comments[subInfo[2]].liked=liked
-                    liked?++temp.comments[subInfo[2]].likedCount:--temp.comments[subInfo[2]].likedCount
+                let liked = subInfo[1] === '1' ? 0 : 1
+                if (type === 'hot') {
+                    temp.hotComments[subInfo[2]].liked = liked
+                    liked ? ++temp.hotComments[subInfo[2]].likedCount : --temp.hotComments[subInfo[2]].likedCount
+                } else {
+                    temp.comments[subInfo[2]].liked = liked
+                    liked ? ++temp.comments[subInfo[2]].likedCount : --temp.comments[subInfo[2]].likedCount
                 }
-                this.setState({commentList:temp})
+                this.setState({ commentList: temp })
             }
         })
     }
@@ -165,12 +174,12 @@ class PlaylistComp extends Component {
                         <div className='list-comment-title'>
                             精彩评论
                         </div>
-                        <CommentListComp lists={commentList.hotComments} onLikeChange={this.handleLike.bind(this,'hot')}></CommentListComp>
+                        <CommentListComp lists={commentList.hotComments} onLikeChange={this.handleLike.bind(this, 'hot')}></CommentListComp>
 
                         <div className='list-comment-title'>
                             最新评论({commentList.comments && commentList.comments.length})
                         </div>
-                        <CommentListComp lists={commentList.comments} onLikeChange={this.handleLike.bind(this,'nor')}></CommentListComp>
+                        <CommentListComp lists={commentList.comments} onLikeChange={this.handleLike.bind(this, 'nor')}></CommentListComp>
                     </div>
                 </div>
                 <div className='list-right'>
@@ -189,15 +198,17 @@ class PlaylistComp extends Component {
                     <div className='list-relate-title'>
                         相关推荐
                     </div>
-                    {relateList.map(item =>
-                        <div className='list-relate' key={item.id}>
-                            <div className='list-relate-img'><Avatar shape="square" size={42} src={item.coverImgUrl} /></div>
-                            <div>
-                                <div className='list-relate-name'>{item.name}</div>
-                                <span className='list-creatot-nickname'>by {item.creator.nickname}</span>
+                    <div onClick={this.handleReplaceList.bind(this)}>
+                        {relateList.map(item =>
+                            <div className='list-relate' key={item.id}>
+                                <div className='list-relate-img'><Avatar shape="square" size={42} src={item.coverImgUrl} /></div>
+                                <div>
+                                    <div className='list-relate-name' data-id={item.id}>{item.name}</div>
+                                    <span className='list-creatot-nickname'>by {item.creator.nickname}</span>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         ) : <Skeleton active paragraph={{ rows: 6, width: [480, 680, 820, 650, 700, 730] }} title={false} />

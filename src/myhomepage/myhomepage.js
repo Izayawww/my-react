@@ -32,7 +32,7 @@ class Myhomepage extends Component {
     getUserList() {
         let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
         if (this.props.userPlaylist) {
-            this.setState({ userPlaylist: this.props })
+            this.setState({ userPlaylist: this.props.userPlaylist })
             return;
         }
         axios.get('/user/playlist?uid=' + userInfo.profile.userId).then(res => {
