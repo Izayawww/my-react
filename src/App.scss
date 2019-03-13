@@ -20,6 +20,14 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
+    a{
+        color:gray;
+        &:visited{
+            color:black;
+            background: linear-gradient(to right, #4e9f5a, #499c5b) !important;
+            border-radius: 30px;
+        }
+    }
 }
 
 .header {
@@ -53,6 +61,13 @@
             }
             .user-avatar {
                 border-radius: 50%;
+            }
+            .avatar-menu{
+                display: flex;
+                align-items: center;
+                img{
+                    margin-right:10px;
+                }
             }
         }
     }

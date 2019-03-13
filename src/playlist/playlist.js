@@ -21,7 +21,8 @@ class PlaylistComp extends Component {
                 { title: '歌曲标题', dataIndex: 'name', key: 'name' },
                 { title: '时长', dataIndex: 'dt', key: 'dt', render: text => <span>{parseInt(text / 60000) + ':' + parseInt((parseFloat(text / 60000) - parseInt(text / 60000)) * 60)}</span> },
                 { title: '歌手', dataIndex: 'ar', key: 'ar', render: text => <span>{text[0].name}</span> },
-                { title: '专辑', dataIndex: 'al', key: 'al', render: text => <span className='list-item-name'>{text.name}</span> }]
+                { title: '专辑', dataIndex: 'al', key: 'al', render: text => <span className='list-item-name'>{text.name}</span> }
+            ]
         }
     }
 

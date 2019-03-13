@@ -1,0 +1,86 @@
+.user-info {
+    display: flex;
+    .ant-avatar-image{
+        border:1px solid gainsboro;
+    }
+    .user-active {
+        margin: 20px 0;
+        &>div {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .user-follow {
+            padding: 0 10px;
+            border: 1px solid gainsboro {
+                top: 0px;
+                bottom: 0px;
+            }
+        }
+    }
+    .user-maininfo{
+        flex:1;
+        margin-left: 30px;
+        font-size:12px;
+        .user-nlg{
+            font-size:20px;
+            color:black;
+        }
+        .user-active{
+            padding:5px 0;
+            border-top:1px solid gainsboro;
+            > div{
+                margin-right: 30px;
+            }
+            .user-follow{
+                padding: 0 20px;
+            }
+            div{
+                text-align: center;
+            }
+            span{
+                font-size:24px;
+                color: darkgray;
+            }
+        }
+    }
+}
+.content-list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.content-info {
+    width: 140px;
+    margin: 10px 15px;
+    cursor: pointer;
+    .list-div {
+        width: 140px;
+        height: 140px;
+        border-radius: 5px;
+        position: relative;
+        background-size: cover;
+        .list-play {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            color: lightgrey;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 10px;
+            background: rgba(0, 0, 0, 0.4);
+            font-size: 12px;
+            .play-count {
+                margin-right: 8px;
+            }
+            .play-icon:hover {
+                color: white;
+                cursor: pointer;
+            }
+        }
+    }
+    .content-name {
+        font-size: 12px;
+        font-weight: bold;
+    }
+}
