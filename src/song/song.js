@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Button, Avatar, Input, message } from 'antd';
+import { Button, Avatar, Input, message,Skeleton } from 'antd';
 import axios from 'axios'
 import '../playlist/index.scss'
 import './song.scss'
 import CommentListComp from '../components/CommentListComp'
-const {TextArea} = Input
+const { TextArea } = Input
 axios.defaults.baseURL = 'http://134.175.224.127:7003';
-axios.defaults.withCredentials=true
+axios.defaults.withCredentials = true
 class PlaylistComp extends Component {
     constructor(props) {
         super(props)
@@ -17,7 +17,7 @@ class PlaylistComp extends Component {
             commentList: {},
             relateList: [],
             loading: false,
-            songUrl:'',
+            songUrl: '',
         }
     }
 
@@ -26,10 +26,10 @@ class PlaylistComp extends Component {
             this.setState({ songDetail: res.data.songs[0] })
         })
     }
-    
+
     getSongUrl() {
         axios.get('/song/url?id=' + this.props.match.params.id).then(res => {
-            this.setState({ songUrl: res.data.data[0].url})
+            this.setState({ songUrl: res.data.data[0].url })
         })
     }
 
@@ -58,7 +58,7 @@ class PlaylistComp extends Component {
     getRelateList() {
         axios.get('/simi/song?id=' + this.props.match.params.id).then(res => {
             let relateList = res.data.songs.map(item => {
-                return { arname: item.artists[0].name, name: item.name, id: item.id }
+                return { arname: item.artists[0].name,imgUrl: item.album.blurPicUrl, name: item.name, id: item.id}
             })
             this.setState({ relateList })
         })
@@ -96,28 +96,39 @@ class PlaylistComp extends Component {
             }
         })
     }
-    handleLike(type,info){
+    handleLike(type, info) {
         let subInfo = info.split('-')
-        axios.get(`/comment/like?id=${this.props.match.params.id}&cid=${subInfo[0]}&t=${subInfo[1]==='1'?0:1}&type=2`).then(res=>{
-            if(res.data.code===200){
+        axios.get(`/comment/like?id=${this.props.match.params.id}&cid=${subInfo[0]}&t=${subInfo[1] === '1' ? 0 : 1}&type=2`).then(res => {
+            if (res.data.code === 200) {
                 let temp = this.state.commentList
-                let liked = subInfo[1]==='1'?0:1
-                if(type==='hot'){
-                    temp.hotComments[subInfo[2]].liked=liked
-                    liked?++temp.hotComments[subInfo[2]].likedCount:--temp.hotComments[subInfo[2]].likedCount
-                }else{
-                    temp.comments[subInfo[2]].liked=liked
-                    liked?++temp.comments[subInfo[2]].likedCount:--temp.comments[subInfo[2]].likedCount
+                let liked = subInfo[1] === '1' ? 0 : 1
+                if (type === 'hot') {
+                    temp.hotComments[subInfo[2]].liked = liked
+                    liked ? ++temp.hotComments[subInfo[2]].likedCount : --temp.hotComments[subInfo[2]].likedCount
+                } else {
+                    temp.comments[subInfo[2]].liked = liked
+                    liked ? ++temp.comments[subInfo[2]].likedCount : --temp.comments[subInfo[2]].likedCount
                 }
-                this.setState({commentList:temp})
+                this.setState({ commentList: temp })
             }
         })
     }
+    async handleReplaceSong(e) {
+        this.props.history.replace("/song/"+e.target.dataset.id)
+        setTimeout(()=>{
+            this.getSongDetail()
+            this.getIyric()
+            this.getSongUrl()
+            this.getRelateList()
+            this.getSimiUserList()
+            this.getComment()
+        },1)
+    }
     render() {
-        const { songDetail, lyric, commentList, simiUserList, relateList,songUrl } = this.state
+        const { songDetail, lyric, commentList, simiUserList, relateList, songUrl } = this.state
         const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
         const size = 'small'
-        return songDetail && (
+        return songDetail ? (
             <div className='list-page'>
                 <audio src={songUrl} autoPlay />
                 <div className='list-main'>
@@ -146,7 +157,7 @@ class PlaylistComp extends Component {
                                 </div>
                                 <div className='lyric-main'>
                                     <div className='lyric-inner'>
-                                        {lyric.map((item,index) => <p key={index}>{item[1]}</p>)}
+                                        {lyric.map((item, index) => <p key={index}>{item[1]}</p>)}
                                     </div>
                                 </div>
                             </div>
@@ -169,17 +180,17 @@ class PlaylistComp extends Component {
                         <div className='list-comment-title'>
                             精彩评论
                         </div>
-                        <CommentListComp lists={commentList.hotComments} onLikeChange={this.handleLike.bind(this,'hot')}></CommentListComp>
+                        <CommentListComp lists={commentList.hotComments} onLikeChange={this.handleLike.bind(this, 'hot')}></CommentListComp>
 
                         <div className='list-comment-title'>
                             最新评论({commentList.comments && commentList.comments.length})
                         </div>
-                        <CommentListComp lists={commentList.comments} onLikeChange={this.handleLike.bind(this,'nor')}></CommentListComp>
+                        <CommentListComp lists={commentList.comments} onLikeChange={this.handleLike.bind(this, 'nor')}></CommentListComp>
                     </div>
                 </div>
                 <div className='list-right'>
                     <div className='list-relate-title'>
-                        最近听过
+                        最近听过的人
                 </div>
                     {simiUserList.map(item =>
                         <div className='list-relate' key={item.userId}>
@@ -193,17 +204,20 @@ class PlaylistComp extends Component {
                     <div className='list-relate-title'>
                         相似歌曲
                     </div>
-                    {relateList.map(item =>
-                        <div className='list-relate' key={item.id}>
-                            <div>
-                                <div className='list-relate-name'>{item.name}</div>
-                                <span className='list-creatot-nickname'>{item.arname}</span>
+                    <div onClick={this.handleReplaceSong.bind(this)}>
+                        {relateList.map(item =>
+                            <div className='list-relate' key={item.id}>
+                                <div className='list-relate-img'><Avatar shape="square" size={42} src={item.imgUrl} /></div>
+                                <div>
+                                    <div className='list-relate-name' data-id={item.id}>{item.name}</div>
+                                    <span className='list-creatot-nickname'>{item.arname}</span>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
-        )
+        ): <Skeleton active paragraph={{ rows: 6, width: [480, 680, 820, 650, 700, 730] }} title={false} />
     }
 }
 

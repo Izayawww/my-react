@@ -1,0 +1,19 @@
+
+.list-left{
+    padding:20px 10px;
+    border-left: 1px solid gainsboro;
+}
+.list-left {
+    min-width: 240px;
+    .userlist-item{
+        cursor: pointer;
+    }
+}
+
+.list-my-main{
+    min-width: 780px;
+}
+.list-creater-info{
+    display: flex;
+    align-items: center;
+}

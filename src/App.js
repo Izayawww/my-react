@@ -4,7 +4,7 @@ import {
 } from 'antd';
 import { HashRouter as Router, Route,Link ,Redirect} from 'react-router-dom'
 import Home from './home/Home'
-import MyList from './my-music/my-music'
+import MyMusic from './my-music/my-music'
 import PlaylistComp from './playlist/playlist'
 import Song from './song/song'
 import './App.scss'
@@ -34,7 +34,7 @@ class App extends Component {
               >
                 <Menu.Item key="1" className='first-item' style={{ color: 'white', fontSize: 18 }}><IconFont type="icon-wangyiyunyinle" />网易云音乐</Menu.Item>
                 <Menu.Item key="2"><Link to='/home'>发现音乐</Link></Menu.Item>
-                <Menu.Item key="3">我的音乐</Menu.Item>
+                <Menu.Item key="3"><Link to='/mymusic'>我的音乐</Link></Menu.Item>
                 <Menu.Item key="4">朋友</Menu.Item>
                 <Menu.Item key="5">商城</Menu.Item>
                 <Menu.Item key="6">音乐人</Menu.Item>
@@ -62,7 +62,7 @@ class App extends Component {
             <div>
               <Route path='/'  exact render={()=> (<Redirect to='/home'/>)}></Route>
               <Route path='/home' component={Home}></Route>
-              <Route path='/mylist' component={MyList}></Route>
+              <Route path='/mymusic' component={MyMusic}></Route>
               <Route path='/playlist/:id' component={PlaylistComp}></Route>
               <Route path='/song/:id' component={Song}></Route>
             </div>
