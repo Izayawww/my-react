@@ -7,6 +7,7 @@ import Home from './home/Home'
 import MyMusic from './my-music/my-music'
 import PlaylistComp from './playlist/playlist'
 import Song from './song/song'
+import Playlistpage from './playlistpage/playlistpage'
 import './App.scss'
 const { Content } = Layout;
 const IconFont = Icon.createFromIconfontCN({ scriptUrl: '//at.alicdn.com/t/font_883876_h3y2yo43haj.js' })
@@ -48,14 +49,16 @@ class App extends Component {
               </div>
             </div>
           </div>
+          <Router>
           <ul className='header-sub-ul'>
             <li><span className='active'>推荐</span></li>
             <li><span>排行榜</span></li>
-            <li><span>歌单</span></li>
+            <li><span><Link to="/playlistpage">歌单</Link></span></li>
             <li><span>主播电台</span></li>
             <li><span>歌手</span></li>
             <li><span>排行版</span></li>
           </ul>
+          </Router>
         </div>
         <Content className='app-content'>
           <Router>
@@ -65,6 +68,7 @@ class App extends Component {
               <Route path='/mymusic' component={MyMusic}></Route>
               <Route path='/playlist/:id' component={PlaylistComp}></Route>
               <Route path='/song/:id' component={Song}></Route>
+              <Route path='/playlistpage' component={Playlistpage}></Route>
             </div>
           </Router>
         </Content>
