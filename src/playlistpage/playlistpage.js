@@ -29,7 +29,7 @@ class Playlistpage extends Component {
                 return { id: item.id, name: item.name, playCount: item.playCount, imgUrl: item.coverImgUrl, trackCount: item.trackCount, creator: item.creator.nickname }
             })
             let total =res.data.total
-            this.setState({ recomendList,total,page:this.state.page+1 })
+            this.setState({ recomendList,total })
         })
     }
 
@@ -47,7 +47,7 @@ class Playlistpage extends Component {
     }
 
     changeCat(e){
-        this.getPlayList(this.state.page,'hot',e.target.dataset.id)
+        this.getPlayList(1,'hot',e.target.dataset.id)
         this.setState({cat:e.target.dataset.id})
     }
 

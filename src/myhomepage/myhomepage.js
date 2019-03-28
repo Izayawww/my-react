@@ -106,9 +106,9 @@ class Myhomepage extends Component {
                     <span className='list-title'>听歌排行</span>
                     <span className='list-len'>累计听歌{userInfo.listenSongs}首歌</span>
                     <span className='list-playcount'>
-                        <span onClick={this.getPlayList.bind(this, 1)}>最近一周</span>
+                        <span onClick={this.getPlayList.bind(this, 1, 10)}>最近一周</span>
                         <span> | </span>
-                        <span onClick={this.getPlayList.bind(this, 0)}>所有时间</span>
+                        <span onClick={this.getPlayList.bind(this, 0, 10)}>所有时间</span>
                     </span>
                 </div>
                 <Table columns={columns} dataSource={history}
@@ -125,7 +125,7 @@ class Myhomepage extends Component {
                         }
                     }}
                 ></Table>
-                {!showAll && <div onClick={this.showAll.bind(this)} style={{textAlign:'right',fontStyle:'italic',cursor:'pointer'}}>
+                {!showAll && <div onClick={this.showAll.bind(this)} style={{ textAlign: 'right', fontStyle: 'italic', cursor: 'pointer' }}>
                     查看更多>
                 </div>
                 }
